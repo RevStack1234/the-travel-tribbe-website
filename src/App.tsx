@@ -249,6 +249,7 @@ function Services() {
 function HowWeWork() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
+  const planeRef = useRef<HTMLDivElement>(null);
 
   const steps = [
     { num: "01", title: "Tell Us Your Plan", desc: "Share your destination, travel dates, preferences and requirements with our team." },
@@ -256,6 +257,12 @@ function HowWeWork() {
     { num: "03", title: "We Arrange", desc: "From flights and hotels to travel assistance and documentation, we coordinate the required arrangements." },
     { num: "04", title: "You Travel", desc: "Everything is organized so you can focus on experiencing your journey." }
   ];
+
+  useEffect(() => {
+    if (isInView && planeRef.current) {
+      planeRef.current.classList.add('active');
+    }
+  }, [isInView]);
 
   return (
     <section className="section bg-white" style={{ paddingTop: '40px' }} ref={ref}>
@@ -270,11 +277,9 @@ function HowWeWork() {
         </motion.h2>
       </div>
       <div className="process-grid">
-        <motion.div
+        <div
           className="plane-track-container"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
+          ref={planeRef}
         >
           <svg className="plane-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
             <path d="M 12.5 50 Q 25 -20 37.5 50 T 62.5 50 T 87.5 50"
@@ -287,7 +292,7 @@ function HowWeWork() {
           <svg className="plane-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
             <path d="M21,16V14L13,9V3.5A1.5,1.5 0 0,0 11.5,2A1.5,1.5 0 0,0 10,3.5V9L2,14V16L10,13.5V19L8,20.5V22L11.5,21L15,22V20.5L13,19V13.5L21,16Z" />
           </svg>
-        </motion.div>
+        </div>
         {steps.map((step, idx) => (
           <motion.div
             key={idx}
