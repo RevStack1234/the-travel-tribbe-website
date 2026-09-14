@@ -27,6 +27,9 @@ module.exports = async function handler(req, res) {
     },
   });
 
+  const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : process.env.SITE_URL || '';
+  const logoUrl = `${baseUrl}/images/ttt-logo.png`;
+
   const htmlTemplate = `
     <!DOCTYPE html>
     <html>
@@ -35,6 +38,7 @@ module.exports = async function handler(req, res) {
         body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f4f4; margin: 0; padding: 20px; }
         .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
         .header { background: linear-gradient(135deg, #1a1a2e, #16213e); padding: 30px; text-align: center; }
+        .logo { width: 80px; height: 80px; margin: 0 auto 15px; display: block; }
         .header h1 { color: #d4af7d; margin: 0; font-size: 24px; }
         .header p { color: #aaa; margin: 5px 0 0; font-size: 14px; }
         .body { padding: 30px; }
@@ -45,11 +49,13 @@ module.exports = async function handler(req, res) {
         .field-value { font-size: 15px; color: #333; font-weight: 500; }
         .message-box { background: #f9f9f9; border-left: 3px solid #d4af7d; padding: 15px; margin: 15px 0; border-radius: 0 8px 8px 0; }
         .footer { background: #f9f9f9; padding: 20px 30px; text-align: center; font-size: 12px; color: #999; }
+        .footer-logo { width: 40px; height: 40px; margin: 0 auto 10px; display: block; opacity: 0.6; }
       </style>
     </head>
     <body>
       <div class="container">
         <div class="header">
+          <img src="${logoUrl}" alt="The Travel Tribbe" class="logo" />
           <h1>The Travel Tribbe</h1>
           <p>New Travel Enquiry Received</p>
         </div>
@@ -91,6 +97,7 @@ module.exports = async function handler(req, res) {
           <div class="message-box">${message}</div>` : ''}
         </div>
         <div class="footer">
+          <img src="${logoUrl}" alt="The Travel Tribbe" class="footer-logo" />
           <p>&copy; ${new Date().getFullYear()} The Travel Tribbe. All Rights Reserved.</p>
           <p>This enquiry was submitted from the website contact form.</p>
         </div>
