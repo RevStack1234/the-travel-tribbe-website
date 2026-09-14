@@ -455,12 +455,48 @@ function EnquiryCTA() {
 
 function Contact() {
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setSubmitted(true);
+    setLoading(true);
+    setError('');
+
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+
+    const data = {
+      name: formData.get('name'),
+      phone: formData.get('phone'),
+      email: formData.get('email'),
+      destination: formData.get('destination'),
+      travelDate: formData.get('travelDate'),
+      travellers: formData.get('travellers'),
+      message: formData.get('message'),
+    };
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      const result = await res.json();
+
+      if (!res.ok) {
+        throw new Error(result.error || 'Something went wrong');
+      }
+
+      setSubmitted(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to submit. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -507,30 +543,35 @@ function Contact() {
             </motion.div>
           ) : (
             <form onSubmit={handleSubmit}>
+              {error && (
+                <div style={{ padding: '12px', backgroundColor: '#ffebee', color: '#c62828', borderRadius: '8px', marginBottom: '20px', fontSize: '14px' }}>
+                  {error}
+                </div>
+              )}
               <div className="form-row">
                 <div className="form-group">
-                  <input type="text" className="form-control" placeholder="Full Name *" required />
+                  <input type="text" name="name" className="form-control" placeholder="Full Name *" required />
                 </div>
                 <div className="form-group">
-                  <input type="tel" className="form-control" placeholder="Phone Number *" required />
+                  <input type="tel" name="phone" className="form-control" placeholder="Phone Number *" required />
                 </div>
               </div>
               <div className="form-group">
-                <input type="email" className="form-control" placeholder="Email Address" />
+                <input type="email" name="email" className="form-control" placeholder="Email Address" />
               </div>
               <div className="form-row">
                 <div className="form-group">
-                  <input type="text" className="form-control" placeholder="Destination *" required />
+                  <input type="text" name="destination" className="form-control" placeholder="Destination *" required />
                 </div>
                 <div className="form-group">
-                  <input type="text" className="form-control" placeholder="Travel Date" />
+                  <input type="text" name="travelDate" className="form-control" placeholder="Travel Date" />
                 </div>
               </div>
               <div className="form-group">
-                <input type="number" className="form-control" placeholder="Number of Travellers" min="1" />
+                <input type="number" name="travellers" className="form-control" placeholder="Number of Travellers" min="1" />
               </div>
               <div className="form-group">
-                <textarea className="form-control" placeholder="Travel Requirements / Message"></textarea>
+                <textarea name="message" className="form-control" placeholder="Travel Requirements / Message"></textarea>
               </div>
               <motion.button
                 type="submit"
@@ -538,8 +579,9 @@ function Contact() {
                 style={{ width: '100%' }}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
+                disabled={loading}
               >
-                Submit Enquiry
+                {loading ? 'Submitting...' : 'Submit Enquiry'}
               </motion.button>
             </form>
           )}

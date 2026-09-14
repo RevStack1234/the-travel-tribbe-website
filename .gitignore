@@ -2,7 +2,8 @@ node_modules
 dist
 dist-ssg
 *.local
-*.env.*
+.env
+.env.*
 .DS_Store
 coverage
 *.tsbuildinfo
