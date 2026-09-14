@@ -257,6 +257,10 @@ ul {
   padding: 100px 5%;
 }
 
+#services {
+  padding-top: 40px; /* Reduced white space above Services section */
+}
+
 .section-header {
   text-align: center;
   margin-bottom: 60px;

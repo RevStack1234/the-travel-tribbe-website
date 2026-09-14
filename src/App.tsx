@@ -1,21 +1,24 @@
 import { useEffect, useState } from 'react';
 import './index.css';
 
-const brainDir = '/@fs/Users/abhi65kugmail.com/.gemini/antigravity-ide/brain/c7da033f-2749-42b3-8dc7-c40db1f02ceb/';
-
 const images = {
-  hero: `${brainDir}hero_bg_1789365633122.png`,
-  destDubai: `${brainDir}dest_dubai_1789365644049.png`,
-  destMaldives: `${brainDir}dest_maldives_1789365656447.png`,
-  destEurope: `${brainDir}dest_europe_1789365677876.png`,
-  destSingapore: `${brainDir}dest_singapore_1789365690995.png`,
-  serviceHoliday: `${brainDir}service_holiday_1789365702723.png`,
-  serviceHotel: `${brainDir}service_hotel_1789365729434.png`,
-  serviceFlight: `${brainDir}service_flight_1789365744743.png`,
-  serviceVisa: `${brainDir}service_visa_1789365756275.png`,
-  servicePlanning: `${brainDir}service_planning_1789365818420.png`,
-  servicePersonalized: `${brainDir}service_personalized_1789365829795.png`,
-  logo: '/images/ttt-logo.png' // Given logo path
+  hero: '/images/hero_bg.png',
+  destDubai: '/images/dest_dubai.png',
+  destMaldives: '/images/dest_maldives.png',
+  destEurope: '/images/dest_europe.png',
+  destSingapore: '/images/dest_singapore.png',
+  serviceHoliday: '/images/service_holiday.png',
+  serviceHolidayNew: 'https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+  serviceHotel: '/images/service_hotel.png',
+  serviceFlight: '/images/service_flight.png',
+  serviceVisa: '/images/service_visa.png',
+  servicePlanning: '/images/service_planning.png',
+  servicePersonalized: '/images/service_personalized.png',
+  usp1: '/images/hero_maldives.png',
+  usp2: '/images/hero_safari.png',
+  usp3: 'https://images.unsplash.com/photo-1542314831-c53cd4b85ca1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+  usp4: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+  logo: '/images/ttt-logo.png'
 };
 
 function Header() {
@@ -126,7 +129,7 @@ function About() {
 
 function Services() {
   const services = [
-    { title: 'Luxury Holidays', desc: 'Curated holiday experiences with premium stays, destinations and personalized travel arrangements.', img: images.serviceHoliday },
+    { title: 'Luxury Holidays', desc: 'Curated holiday experiences with premium stays, destinations and personalized travel arrangements.', img: images.serviceHolidayNew },
     { title: 'Premium Hotel Stays', desc: 'Access to carefully selected hotels and premium accommodation options suited to your journey.', img: images.serviceHotel },
     { title: 'Business & First-Class Flights', desc: 'Premium flight options designed for comfort, convenience and a seamless travel experience.', img: images.serviceFlight },
     { title: 'Visa Assistance', desc: 'Guidance and assistance with visa documentation and travel requirements for your destination.', img: images.serviceVisa },
@@ -199,10 +202,10 @@ function HowWeWork() {
 
 function WhyChooseUs() {
   const usps = [
-    { title: "Personalized Service", desc: "Every journey is planned around your individual travel requirements.", img: images.servicePersonalized },
-    { title: "Premium Options", desc: "We focus on quality stays, premium travel options and memorable experiences.", img: images.serviceHotel },
-    { title: "Hassle-Free Planning", desc: "We simplify the planning and booking process by managing the important details.", img: images.servicePlanning },
-    { title: "Dedicated Assistance", desc: "Our team remains available to assist you throughout your travel planning journey.", img: images.serviceVisa }
+    { title: "Personalized Service", desc: "Every journey is planned around your individual travel requirements.", img: images.usp1 },
+    { title: "Premium Options", desc: "We focus on quality stays, premium travel options and memorable experiences.", img: images.usp2 },
+    { title: "Hassle-Free Planning", desc: "We simplify the planning and booking process by managing the important details.", img: images.usp3 },
+    { title: "Dedicated Assistance", desc: "Our team remains available to assist you throughout your travel planning journey.", img: images.usp4 }
   ];
 
   return (
