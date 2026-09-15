@@ -45,79 +45,128 @@ export default async function handler(req, res) {
     },
   });
 
-  const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : process.env.SITE_URL || '';
-  const logoUrl = `${baseUrl}/images/ttt-logo.png`;
+  const protocol = req.headers['x-forwarded-proto'] || 'http';
+  const host = req.headers.host || 'localhost:3000';
+  let baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : process.env.SITE_URL;
+  if (!baseUrl) {
+    baseUrl = `${protocol}://${host}`;
+  }
+
+  // Fallback to a placeholder image if local, to demonstrate external image linking in email clients.
+  // The actual logo will work once deployed to a live domain or by setting SITE_URL in .env to a public URL.
+  const isLocal = baseUrl.includes('localhost');
+  const logoUrl = isLocal 
+    ? 'https://placehold.co/200x200/111827/d4af37.png?text=The+Travel+Tribbe&font=montserrat' 
+    : `${baseUrl}/images/ttt-logo.png`;
 
   const htmlTemplate = `
     <!DOCTYPE html>
-    <html>
+    <html lang="en">
     <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>New Travel Enquiry</title>
       <style>
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f4f4; margin: 0; padding: 20px; }
-        .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
-        .header { background: linear-gradient(135deg, #1a1a2e, #16213e); padding: 30px; text-align: center; }
-        .logo { width: 80px; height: 80px; margin: 0 auto 15px; display: block; }
-        .header h1 { color: #d4af7d; margin: 0; font-size: 24px; }
-        .header p { color: #aaa; margin: 5px 0 0; font-size: 14px; }
-        .body { padding: 30px; }
-        .badge { display: inline-block; background: #d4af7d; color: #1a1a2e; padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-bottom: 20px; }
-        .section-title { font-size: 13px; color: #888; text-transform: uppercase; letter-spacing: 1px; margin: 20px 0 10px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
-        .field { margin: 12px 0; }
-        .field-label { font-size: 12px; color: #999; margin-bottom: 3px; }
-        .field-value { font-size: 15px; color: #333; font-weight: 500; }
-        .message-box { background: #f9f9f9; border-left: 3px solid #d4af7d; padding: 15px; margin: 15px 0; border-radius: 0 8px 8px 0; }
-        .footer { background: #f9f9f9; padding: 20px 30px; text-align: center; font-size: 12px; color: #999; }
-        .footer-logo { width: 40px; height: 40px; margin: 0 auto 10px; display: block; opacity: 0.6; }
+        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f7f9fc; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+        .wrapper { width: 100%; background-color: #f7f9fc; padding: 40px 0; }
+        .container { max-width: 650px; margin: 0 auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .header { background: linear-gradient(135deg, #111827 0%, #1f2937 100%); padding: 40px 30px; text-align: center; border-bottom: 4px solid #d4af37; }
+        .logo-img { max-width: 120px; height: auto; margin-bottom: 20px; border-radius: 50%; border: 2px solid rgba(212, 175, 55, 0.3); padding: 5px; background: rgba(255,255,255,0.05); }
+        .header h1 { color: #ffffff; margin: 0; font-size: 28px; font-weight: 300; letter-spacing: 1px; }
+        .header h1 strong { color: #d4af37; font-weight: 600; }
+        .header p { color: #9ca3af; margin: 10px 0 0; font-size: 15px; font-weight: 400; text-transform: uppercase; letter-spacing: 2px; }
+        .body-content { padding: 40px 30px; }
+        .greeting { font-size: 18px; color: #374151; margin-bottom: 30px; font-weight: 500; text-align: center; }
+        .section { margin-bottom: 35px; background: #f8fafc; border-radius: 12px; padding: 25px; border: 1px solid #e2e8f0; }
+        .section-header { display: flex; align-items: center; margin-bottom: 20px; }
+        .section-title { font-size: 14px; color: #d4af37; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; margin: 0; }
+        .grid { display: table; width: 100%; }
+        .grid-row { display: table-row; }
+        .grid-cell { display: table-cell; padding: 12px 10px; border-bottom: 1px solid #e5e7eb; vertical-align: top; }
+        .grid-row:last-child .grid-cell { border-bottom: none; }
+        .label { font-size: 13px; color: #6b7280; font-weight: 600; width: 40%; text-transform: uppercase; letter-spacing: 0.5px; }
+        .value { font-size: 15px; color: #111827; font-weight: 500; width: 60%; }
+        .message-box { background: #ffffff; border-left: 4px solid #d4af37; padding: 20px; margin-top: 15px; border-radius: 0 8px 8px 0; font-size: 15px; color: #374151; line-height: 1.6; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .footer { background: #111827; padding: 30px; text-align: center; color: #6b7280; font-size: 13px; }
+        .footer-logo { width: 50px; opacity: 0.5; margin-bottom: 15px; filter: grayscale(100%); }
+        .footer p { margin: 5px 0; }
+        .footer a { color: #d4af37; text-decoration: none; }
       </style>
     </head>
     <body>
-      <div class="container">
-        <div class="header">
-          <img src="${logoUrl}" alt="The Travel Tribbe" class="logo" />
-          <h1>The Travel Tribbe</h1>
-          <p>New Travel Enquiry Received</p>
-        </div>
-        <div class="body">
-          <div class="badge">NEW ENQUIRY</div>
+      <div class="wrapper">
+        <div class="container">
+          <!-- Header -->
+          <div class="header">
+            <img src="${logoUrl}" alt="The Travel Tribbe Logo" class="logo-img" width="120" />
+            <h1>The Travel <strong>Tribbe</strong></h1>
+            <p>New Enquiry Received</p>
+          </div>
+          
+          <!-- Body -->
+          <div class="body-content">
+            <div class="greeting">
+              You have received a new travel enquiry! ✈️
+            </div>
 
-          <div class="section-title">Contact Details</div>
-          <div class="field">
-            <div class="field-label">Full Name</div>
-            <div class="field-value">${escapeHtml(name)}</div>
-          </div>
-          <div class="field">
-            <div class="field-label">Phone Number</div>
-            <div class="field-value">${escapeHtml(phone)}</div>
-          </div>
-          ${email ? `
-          <div class="field">
-            <div class="field-label">Email Address</div>
-            <div class="field-value">${escapeHtml(email)}</div>
-          </div>` : ''}
+            <!-- Contact Information -->
+            <div class="section">
+              <h2 class="section-title">👤 Contact Information</h2>
+              <div class="grid">
+                <div class="grid-row">
+                  <div class="grid-cell label">Full Name</div>
+                  <div class="grid-cell value">${escapeHtml(name)}</div>
+                </div>
+                <div class="grid-row">
+                  <div class="grid-cell label">Phone</div>
+                  <div class="grid-cell value">${escapeHtml(phone)}</div>
+                </div>
+                ${email ? `
+                <div class="grid-row">
+                  <div class="grid-cell label">Email</div>
+                  <div class="grid-cell value"><a href="mailto:${escapeHtml(email)}" style="color: #d4af37; text-decoration: none;">${escapeHtml(email)}</a></div>
+                </div>` : ''}
+              </div>
+            </div>
 
-          <div class="section-title">Travel Details</div>
-          <div class="field">
-            <div class="field-label">Destination</div>
-            <div class="field-value">${escapeHtml(destination)}</div>
+            <!-- Travel Details -->
+            <div class="section">
+              <h2 class="section-title">🗺️ Travel Details</h2>
+              <div class="grid">
+                <div class="grid-row">
+                  <div class="grid-cell label">Destination</div>
+                  <div class="grid-cell value" style="color: #d4af37; font-weight: bold;">${escapeHtml(destination)}</div>
+                </div>
+                ${travelDate ? `
+                <div class="grid-row">
+                  <div class="grid-cell label">Travel Date</div>
+                  <div class="grid-cell value">${escapeHtml(travelDate)}</div>
+                </div>` : ''}
+                ${travellers ? `
+                <div class="grid-row">
+                  <div class="grid-cell label">Travellers</div>
+                  <div class="grid-cell value">${escapeHtml(travellers)} People</div>
+                </div>` : ''}
+              </div>
+            </div>
+
+            <!-- Message -->
+            ${message ? `
+            <div class="section" style="background: transparent; border: none; padding: 0;">
+              <h2 class="section-title" style="margin-left: 5px;">💬 Message / Requirements</h2>
+              <div class="message-box">
+                ${escapeHtml(message).replace(/\n/g, '<br>')}
+              </div>
+            </div>` : ''}
+            
           </div>
-          ${travelDate ? `
-          <div class="field">
-            <div class="field-label">Travel Date</div>
-            <div class="field-value">${escapeHtml(travelDate)}</div>
-          </div>` : ''}
-          ${travellers ? `
-          <div class="field">
-            <div class="field-label">Number of Travellers</div>
-            <div class="field-value">${escapeHtml(travellers)}</div>
-          </div>` : ''}
-          ${message ? `
-          <div class="section-title">Message / Requirements</div>
-          <div class="message-box">${escapeHtml(message)}</div>` : ''}
-        </div>
-        <div class="footer">
-          <img src="${logoUrl}" alt="The Travel Tribbe" class="footer-logo" />
-          <p>&copy; ${new Date().getFullYear()} The Travel Tribbe. All Rights Reserved.</p>
-          <p>This enquiry was submitted from the website contact form.</p>
+
+          <!-- Footer -->
+          <div class="footer">
+            <img src="${logoUrl}" alt="TTT" class="footer-logo" width="50" />
+            <p>&copy; ${new Date().getFullYear()} The Travel Tribbe. All Rights Reserved.</p>
+            <p>This enquiry was automatically generated from your website's contact form.</p>
+          </div>
         </div>
       </div>
     </body>

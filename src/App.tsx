@@ -23,6 +23,39 @@ const images = {
   logo: '/images/ttt-logo.png'
 };
 
+// function openRazorpay(onSuccess: (paymentId: string) => void) {
+//   const options: RazorpayOptions = {
+//     key: import.meta.env.VITE_RAZORPAY_KEY_ID || '',
+//     amount: 10000,
+//     currency: 'INR',
+//     name: 'The Travel Tribbe',
+//     description: 'Trip Booking Payment',
+//     handler: function (response: RazorpayResponse) {
+//       console.log('Payment Success:', response.razorpay_payment_id);
+//       onSuccess(response.razorpay_payment_id);
+//     },
+//     prefill: {
+//       name: '',
+//       email: '',
+//       contact: '',
+//     },
+//     notes: {
+//       trip: 'travel-tribbe',
+//     },
+//     theme: {
+//       color: '#1a365d',
+//     },
+//     modal: {
+//       ondismiss: function () {
+//         console.log('Payment modal closed');
+//       },
+//     },
+//   };
+//
+//   const rzp = new window.Razorpay(options);
+//   rzp.open();
+// }
+
 function Header() {
   const [scrolled, setScrolled] = useState(false);
 
@@ -50,7 +83,7 @@ function Header() {
         <a href="#services" className="nav-link">Services</a>
         <a href="#why-us" className="nav-link">Why Choose Us</a>
         <a href="#contact" className="nav-link">Contact</a>
-        <a href="#plan" className="btn btn-primary" style={{ padding: '10px 24px', fontSize: '0.85rem' }}>Plan Your Trip</a>
+        <a href="https://razorpay.me/@unityenterprises9893" target="_blank" rel="noopener noreferrer" className="btn btn-primary" style={{ padding: '10px 24px', fontSize: '0.85rem', cursor: 'pointer' }}>Pay Now</a>
       </nav>
       <button className="mobile-menu-btn">☰</button>
     </motion.header>
@@ -772,6 +805,56 @@ function Footer() {
     </footer>
   );
 }
+
+// function PaymentSuccessModal({ paymentId, onClose }: { paymentId: string; onClose: () => void }) {
+//   return (
+//     <div className="modal-overlay" style={{
+//       position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
+//       backgroundColor: 'rgba(0, 0, 0, 0.6)', backdropFilter: 'blur(4px)',
+//       display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999
+//     }}>
+//       <motion.div
+//         initial={{ opacity: 0, scale: 0.9, y: 20 }}
+//         animate={{ opacity: 1, scale: 1, y: 0 }}
+//         exit={{ opacity: 0, scale: 0.9, y: 20 }}
+//         className="modal-content"
+//         style={{
+//           background: 'white', padding: '40px', borderRadius: '16px',
+//           maxWidth: '400px', width: '90%', textAlign: 'center',
+//           boxShadow: '0 20px 40px rgba(0,0,0,0.2)'
+//         }}
+//       >
+//         <div style={{
+//           width: '60px', height: '60px', borderRadius: '50%',
+//           background: '#e8f5e9', color: '#4caf50',
+//           display: 'flex', alignItems: 'center', justifyContent: 'center',
+//           margin: '0 auto 20px', fontSize: '30px'
+//         }}>
+//           ✓
+//         </div>
+//         <h3 style={{ margin: '0 0 10px', color: '#1a365d', fontSize: '24px' }}>Payment Successful!</h3>
+//         <p style={{ color: '#666', marginBottom: '20px', lineHeight: '1.5' }}>
+//           Thank you for your payment. Your booking has been confirmed.
+//         </p>
+//         <div style={{
+//           background: '#f8f9fa', padding: '15px', borderRadius: '8px',
+//           marginBottom: '25px', fontSize: '14px', color: '#444',
+//           border: '1px dashed #ccc'
+//         }}>
+//           <span style={{ display: 'block', fontSize: '12px', color: '#888', marginBottom: '4px' }}>Transaction ID</span>
+//           <strong>{paymentId}</strong>
+//         </div>
+//         <button
+//           onClick={onClose}
+//           className="btn btn-primary"
+//           style={{ width: '100%', padding: '12px' }}
+//         >
+//           Done
+//         </button>
+//       </motion.div>
+//     </div>
+//   );
+// }
 
 function App() {
   return (
