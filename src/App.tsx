@@ -12,7 +12,7 @@ const images = {
   destEurope: '/images/dest_europe.jpg',
   destSingapore: '/images/dest_singapore.jpg',
   serviceHoliday: '/images/service_holiday.jpg',
-  serviceHolidayNew: 'https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+  serviceHolidayNew: 'https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=75',
   serviceHotel: '/images/service_hotel.jpg',
   serviceFlight: '/images/service_flight.jpg',
   serviceVisa: '/images/service_visa.jpg',
@@ -20,8 +20,8 @@ const images = {
   servicePersonalized: '/images/service_personalized.jpg',
   usp1: '/images/hero_maldives.jpg',
   usp2: '/images/hero_safari.jpg',
-  usp3: 'https://images.unsplash.com/photo-1542314831-c53cd4b85ca1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-  usp4: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+  usp3: 'https://images.unsplash.com/photo-1542314831-c53cd4b85ca1?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=75',
+  usp4: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=75',
   logo: '/images/ttt-logo.png'
 };
 
@@ -89,7 +89,7 @@ function Header() {
       transition={{ duration: 0.6, ease: 'easeOut' }}
     >
       <div className="header-brand">
-        <img src={images.logo} alt="The Travel Tribbe Logo" className="header-logo" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.insertAdjacentHTML('afterend', '<span style="font-family:Playfair Display; font-size:1.5rem; font-weight:700; color:var(--primary);">The Travel Tribbe</span>'); }} />
+        <img src={images.logo} alt="The Travel Tribbe Logo" className="header-logo" loading="eager" fetchPriority="high" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.insertAdjacentHTML('afterend', '<span style="font-family:Playfair Display; font-size:1.5rem; font-weight:700; color:var(--primary);">The Travel Tribbe</span>'); }} />
       </div>
       <nav className="nav-links">
         <a href="#home" className="nav-link">Home</a>
@@ -139,6 +139,9 @@ function Hero() {
             src={img}
             alt="Luxury Destination"
             className={`hero-slide hero-slide-${idx + 1}`}
+            loading={idx === 0 ? 'eager' : 'lazy'}
+            fetchPriority={idx === 0 ? 'high' : undefined}
+            decoding="async"
           />
         ))}
       </div>
@@ -202,8 +205,8 @@ function About() {
           animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -60 }}
           transition={{ duration: 0.8 }}
         >
-          <img src={images.serviceHotel} alt="Luxury Hotel" className="collage-img-1" />
-          <img src={images.serviceHoliday} alt="Luxury Holiday" className="collage-img-2" />
+          <img src={images.serviceHotel} alt="Luxury Hotel" className="collage-img-1" loading="lazy" />
+          <img src={images.serviceHoliday} alt="Luxury Holiday" className="collage-img-2" loading="lazy" />
           <div className="collage-badge">
             <span style={{ display: 'block', fontSize: '2rem', color: 'white', marginBottom: '5px' }}>Premium</span>
             Travel Experiences
@@ -294,7 +297,7 @@ function Services() {
             whileHover={{ y: -10, boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }}
           >
             <div className="service-img-wrapper-v2">
-              <img src={svc.img} alt={svc.title} className="service-img-v2" />
+              <img src={svc.img} alt={svc.title} className="service-img-v2" loading="lazy" />
             </div>
             <div className="service-content-v2">
               <div className="service-num-v2">0{idx + 1}</div>
@@ -454,7 +457,7 @@ function Destinations() {
             transition={{ duration: 0.6, delay: idx * 0.1 }}
             whileHover={{ scale: 1.03 }}
           >
-            <img src={dest.img} alt={dest.name} className="dest-img" />
+            <img src={dest.img} alt={dest.name} className="dest-img" loading="lazy" />
             <div className="dest-overlay">
               <h3 className="dest-title">{dest.name}</h3>
               <p className="dest-desc">{dest.subtitle}</p>
@@ -796,7 +799,7 @@ function Footer() {
     <footer className="footer">
       <div className="footer-grid">
         <div className="footer-brand">
-          <img src={images.logo} alt="The Travel Tribbe Logo" className="footer-logo" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.insertAdjacentHTML('afterend', '<div class="footer-logo-text">TRIBBE</div>'); }} />
+          <img src={images.logo} alt="The Travel Tribbe Logo" className="footer-logo" loading="lazy" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.insertAdjacentHTML('afterend', '<div class="footer-logo-text">TRIBBE</div>'); }} />
           <p className="footer-tagline">Travel better. Travel in luxury.</p>
           <div className="footer-socials">
             <a href="https://www.linkedin.com/in/chetan-patni-5755203b0?utm_source=share_via&utm_content=profile&utm_medium=member_ios" target="_blank" rel="noopener noreferrer" className="social-icon">
@@ -936,6 +939,7 @@ function PaymentSuccessModal({ paymentId, onClose }: { paymentId: string; onClos
 
 function App() {
   const [paymentSuccessId, setPaymentSuccessId] = useState<string | null>(null);
+  const [pageReady, setPageReady] = useState(false);
   const [currentRoute, setCurrentRoute] = useState(() => {
     if (window.location.hash.includes('cancellation-policy')) return 'cancellation-policy';
     if (window.location.hash.includes('privacy-policy')) return 'privacy-policy';
@@ -954,6 +958,11 @@ function App() {
     };
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setPageReady(true), 300);
+    return () => clearTimeout(timer);
   }, []);
 
   if (currentRoute === 'cancellation-policy') {
@@ -991,7 +1000,7 @@ function App() {
   }
 
   return (
-    <div className="app">
+    <div className="app" style={{ opacity: pageReady ? 1 : 0, transition: 'opacity 0.3s ease' }}>
       <Header />
       <Hero />
       <About />
