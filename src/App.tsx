@@ -89,7 +89,9 @@ function Header() {
       transition={{ duration: 0.6, ease: 'easeOut' }}
     >
       <div className="header-brand">
-        <img src={images.logo} alt="The Travel Tribbe Logo" className="header-logo" loading="eager" fetchPriority="high" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.insertAdjacentHTML('afterend', '<span style="font-family:Playfair Display; font-size:1.5rem; font-weight:700; color:var(--primary);">The Travel Tribbe</span>'); }} />
+        <a href="#home" style={{ display: 'flex', alignItems: 'center' }}>
+          <img src={images.logo} alt="The Travel Tribbe Logo" className="header-logo" loading="eager" fetchPriority="high" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.insertAdjacentHTML('afterend', '<span style="font-family:Playfair Display; font-size:1.5rem; font-weight:700; color:var(--primary);">The Travel Tribbe</span>'); }} />
+        </a>
       </div>
       <nav className="nav-links">
         <a href="#home" className="nav-link">Home</a>
@@ -106,7 +108,9 @@ function Header() {
       {mobileMenuOpen && <div className="mobile-menu-overlay" onClick={closeMobileMenu} />}
       <div className={`mobile-nav ${mobileMenuOpen ? 'open' : ''}`}>
         <div className="mobile-nav-header">
-          <img src={images.logo} alt="The Travel Tribbe" className="mobile-nav-logo" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+          <a href="#home" style={{ display: 'flex', justifyContent: 'center' }}>
+            <img src={images.logo} alt="The Travel Tribbe" className="mobile-nav-logo" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+          </a>
           <button className="mobile-nav-close" onClick={closeMobileMenu} aria-label="Close menu">✕</button>
         </div>
         <a href="#home" className="mobile-nav-link" onClick={closeMobileMenu}>Home</a>
@@ -790,7 +794,9 @@ function Footer() {
     <footer className="footer">
       <div className="footer-grid">
         <div className="footer-brand">
-          <img src={images.logo} alt="The Travel Tribbe Logo" className="footer-logo" loading="lazy" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.insertAdjacentHTML('afterend', '<div class="footer-logo-text">TRIBBE</div>'); }} />
+          <a href="#home" style={{ display: 'flex', alignItems: 'center' }}>
+            <img src={images.logo} alt="The Travel Tribbe Logo" className="footer-logo" loading="lazy" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.insertAdjacentHTML('afterend', '<div class="footer-logo-text">TRIBBE</div>'); }} />
+          </a>
           <p className="footer-tagline">Travel better. Travel in luxury.</p>
           <div className="footer-socials">
             <a href="https://www.linkedin.com/in/chetan-patni-5755203b0?utm_source=share_via&utm_content=profile&utm_medium=member_ios" target="_blank" rel="noopener noreferrer" className="social-icon">
