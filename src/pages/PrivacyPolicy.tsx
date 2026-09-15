@@ -132,9 +132,7 @@ export default function PrivacyPolicy() {
               <p style={paragraphStyle}>For privacy-related questions, requests or complaints, please contact:</p>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gap: '15px' }}>
                 <li style={{ fontSize: '1.2rem', color: 'var(--primary)' }}><strong>The Travel Tribbe</strong></li>
-                <li><strong>Email:</strong> <a href="mailto:accounts@thetraveltribbe.com" style={{ color: 'var(--accent)', textDecoration: 'none', fontWeight: 500 }}>accounts@thetraveltribbe.com</a></li>
-                <li><strong>Address:</strong> Ganpati Cottage, 6B 1-A Court Road, Civil Lines, Delhi, India</li>
-                <li><strong>GSTIN:</strong> 07AJLPP2220M1Z1</li>
+                <li><strong>Email:</strong> <a href="mailto:reservations@thetraveltribbe.com" style={{ color: 'var(--accent)', textDecoration: 'none', fontWeight: 500 }}>reservations@thetraveltribbe.com</a></li>
               </ul>
             </div>
 

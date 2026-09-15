@@ -130,16 +130,14 @@ export default function CancellationPolicy({ onBack: _onBack }: Props) {
 
             <div>
               <h2 style={headingStyle}>14. How to Request a Cancellation or Refund</h2>
-              <p style={paragraphStyle}>Send the request to <a href="mailto:accounts@thetraveltribbe.com" style={{ color: 'var(--accent)', textDecoration: 'none', fontWeight: 500 }}>accounts@thetraveltribbe.com</a> with the customer's name, booking/reference number, service booked, travel date and reason for cancellation. The team may request additional information to verify the booking and process the request.</p>
+              <p style={paragraphStyle}>Send the request to <a href="mailto:reservations@thetraveltribbe.com" style={{ color: 'var(--accent)', textDecoration: 'none', fontWeight: 500 }}>reservations@thetraveltribbe.com</a> with the customer's name, booking/reference number, service booked, travel date and reason for cancellation. The team may request additional information to verify the booking and process the request.</p>
             </div>
 
             <div style={{ backgroundColor: 'var(--bg-main)', padding: '50px', marginTop: '20px', borderTop: '4px solid var(--accent)' }}>
               <h2 style={{ fontFamily: 'var(--font-heading)', color: 'var(--primary)', fontSize: '2rem', marginBottom: '25px' }}>15. Contact</h2>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gap: '15px' }}>
                 <li style={{ fontSize: '1.2rem', color: 'var(--primary)' }}><strong>The Travel Tribbe</strong></li>
-                <li><strong>Email:</strong> <a href="mailto:accounts@thetraveltribbe.com" style={{ color: 'var(--accent)', textDecoration: 'none', fontWeight: 500 }}>accounts@thetraveltribbe.com</a></li>
-                <li><strong>Address:</strong> Ganpati Cottage, 6B 1-A Court Road, Civil Lines, Delhi, India</li>
-                <li><strong>GSTIN:</strong> 07AJLPP2220M1Z1</li>
+                <li><strong>Email:</strong> <a href="mailto:reservations@thetraveltribbe.com" style={{ color: 'var(--accent)', textDecoration: 'none', fontWeight: 500 }}>reservations@thetraveltribbe.com</a></li>
               </ul>
             </div>
 

@@ -644,19 +644,10 @@ function Contact() {
         >
           <div className="contact-info">
             <h2 className="section-title" style={{ textAlign: 'left', marginBottom: '40px' }}>The Travel Tribbe</h2>
-            <div className="info-block">
-              <div className="info-label">Business Address</div>
-              <div className="info-value">Ganpati Cottage, 6B 1-A Court Road, Civil Lines, Delhi, India</div>
-            </div>
-
-            <div className="info-block">
-              <div className="info-label">GSTIN</div>
-              <div className="info-value">07AJLPP2220M1Z1</div>
-            </div>
 
             <div className="info-block">
               <div className="info-label">Email</div>
-              <div className="info-value">accounts@thetraveltribbe.com</div>
+              <div className="info-value">reservations@thetraveltribbe.com</div>
             </div>
             <div style={{ marginTop: '40px' }}>
               <h3 style={{ fontSize: '1.2rem', marginBottom: '10px' }}>Get in Touch</h3>
@@ -825,9 +816,7 @@ function Footer() {
         <div>
           <h4 className="footer-title">Contact</h4>
           <ul className="footer-links">
-            <li><a href="mailto:accounts@thetraveltribbe.com">accounts@thetraveltribbe.com</a></li>
-            <li style={{ color: 'rgba(255,255,255,0.7)', marginTop: '10px', lineHeight: '1.6' }}>Ganpati Cottage, 6B 1-A<br />Court Road, Civil Lines<br />Delhi, India</li>
-            <li style={{ color: 'rgba(255,255,255,0.7)', marginTop: '10px' }}>GSTIN: 07AJLPP2220M1Z1</li>
+            <li><a href="mailto:reservations@thetraveltribbe.com">reservations@thetraveltribbe.com</a></li>
           </ul>
         </div>
         <div>
