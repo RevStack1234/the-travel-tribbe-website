@@ -300,7 +300,7 @@ function Services() {
               <div className="service-num-v2">0{idx + 1}</div>
               <h3 className="service-title-v2">{svc.title}</h3>
               <p className="service-desc-v2">{svc.desc}</p>
-              <div className="service-explore-v2">Discover <span>→</span></div>
+              <a href="#contact" className="service-explore-v2">Discover <span>→</span></a>
             </div>
           </motion.div>
         ))}
