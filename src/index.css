@@ -774,9 +774,41 @@ ul {
   box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
 }
 
+.form-control-error {
+  border-color: #c62828;
+}
+
+.form-control-error:focus {
+  border-color: #c62828;
+  box-shadow: 0 0 0 2px rgba(198, 40, 40, 0.2);
+}
+
+.form-error {
+  display: block;
+  color: #c62828;
+  font-size: 0.8rem;
+  margin-top: 5px;
+}
+
 textarea.form-control {
   min-height: 120px;
   resize: vertical;
+}
+
+/* Remove number input spinners */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* Date input placeholder color */
+input[type="date"]:not(:valid)::before {
+  content: attr(placeholder);
+  color: #999;
 }
 
 /* Footer */

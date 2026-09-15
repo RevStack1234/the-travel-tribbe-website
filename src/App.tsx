@@ -460,29 +460,94 @@ function Contact() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
 
+  const [formData, setFormData] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    destination: '',
+    travelDate: '',
+    travellers: '',
+    message: '',
+  });
+
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
+
+  const today = new Date().toISOString().split('T')[0];
+
+  const validate = (field: string, value: string): string => {
+    switch (field) {
+      case 'name':
+        if (!value.trim()) return 'Name is required';
+        if (value.trim().length < 3) return 'Name must be at least 3 characters';
+        return '';
+      case 'phone':
+        if (!value.trim()) return 'Phone number is required';
+        if (!/^[6-9]\d{9}$/.test(value.trim())) return 'Enter a valid 10-digit Indian phone number';
+        return '';
+      case 'email':
+        if (value.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())) {
+          return 'Enter a valid email address';
+        }
+        return '';
+      case 'destination':
+        if (!value.trim()) return 'Destination is required';
+        return '';
+      case 'travelDate':
+        if (value && value < today) return 'Travel date cannot be in the past';
+        return '';
+      case 'travellers':
+        if (value && (isNaN(Number(value)) || Number(value) < 1 || Number(value) > 99)) {
+          return 'Enter a valid number (1-99)';
+        }
+        return '';
+      default:
+        return '';
+    }
+  };
+
+  const handleChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    if (touched[field]) {
+      setErrors(prev => ({ ...prev, [field]: validate(field, value) }));
+    }
+  };
+
+  const handleBlur = (field: string) => {
+    setTouched(prev => ({ ...prev, [field]: true }));
+    setErrors(prev => ({ ...prev, [field]: validate(field, formData[field as keyof typeof formData]) }));
+  };
+
+  const validateAll = (): boolean => {
+    const newErrors: Record<string, string> = {};
+    let valid = true;
+    (Object.keys(formData) as Array<keyof typeof formData>).forEach(field => {
+      const err = validate(field, formData[field]);
+      if (err) {
+        newErrors[field] = err;
+        valid = false;
+      }
+    });
+    setErrors(newErrors);
+    setTouched({
+      name: true, phone: true, email: true,
+      destination: true, travelDate: true, travellers: true, message: true,
+    });
+    return valid;
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!validateAll()) return;
+
     setLoading(true);
     setError('');
-
-    const form = e.currentTarget;
-    const formData = new FormData(form);
-
-    const data = {
-      name: formData.get('name'),
-      phone: formData.get('phone'),
-      email: formData.get('email'),
-      destination: formData.get('destination'),
-      travelDate: formData.get('travelDate'),
-      travellers: formData.get('travellers'),
-      message: formData.get('message'),
-    };
 
     try {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify(formData),
       });
 
       const result = await res.json();
@@ -498,6 +563,9 @@ function Contact() {
       setLoading(false);
     }
   };
+
+  const inputClass = (field: string) =>
+    `form-control${touched[field] && errors[field] ? ' form-control-error' : ''}`;
 
   return (
     <section id="contact" className="section bg-white" ref={ref}>
@@ -542,7 +610,7 @@ function Contact() {
               <p>Thank you for contacting The Travel Tribbe. Our travel team will get in touch with you shortly.</p>
             </motion.div>
           ) : (
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} noValidate>
               {error && (
                 <div style={{ padding: '12px', backgroundColor: '#ffebee', color: '#c62828', borderRadius: '8px', marginBottom: '20px', fontSize: '14px' }}>
                   {error}
@@ -550,28 +618,91 @@ function Contact() {
               )}
               <div className="form-row">
                 <div className="form-group">
-                  <input type="text" name="name" className="form-control" placeholder="Full Name *" required />
+                  <input
+                    type="text"
+                    name="name"
+                    className={inputClass('name')}
+                    placeholder="Full Name *"
+                    value={formData.name}
+                    onChange={e => handleChange('name', e.target.value)}
+                    onBlur={() => handleBlur('name')}
+                  />
+                  {touched.name && errors.name && <span className="form-error">{errors.name}</span>}
                 </div>
                 <div className="form-group">
-                  <input type="tel" name="phone" className="form-control" placeholder="Phone Number *" required />
+                  <input
+                    type="tel"
+                    name="phone"
+                    className={inputClass('phone')}
+                    placeholder="Phone Number *"
+                    maxLength={10}
+                    value={formData.phone}
+                    onChange={e => handleChange('phone', e.target.value.replace(/\D/g, ''))}
+                    onBlur={() => handleBlur('phone')}
+                  />
+                  {touched.phone && errors.phone && <span className="form-error">{errors.phone}</span>}
                 </div>
               </div>
               <div className="form-group">
-                <input type="email" name="email" className="form-control" placeholder="Email Address" />
+                <input
+                  type="email"
+                  name="email"
+                  className={inputClass('email')}
+                  placeholder="Email Address"
+                  value={formData.email}
+                  onChange={e => handleChange('email', e.target.value)}
+                  onBlur={() => handleBlur('email')}
+                />
+                {touched.email && errors.email && <span className="form-error">{errors.email}</span>}
               </div>
               <div className="form-row">
                 <div className="form-group">
-                  <input type="text" name="destination" className="form-control" placeholder="Destination *" required />
+                  <input
+                    type="text"
+                    name="destination"
+                    className={inputClass('destination')}
+                    placeholder="Destination *"
+                    value={formData.destination}
+                    onChange={e => handleChange('destination', e.target.value)}
+                    onBlur={() => handleBlur('destination')}
+                  />
+                  {touched.destination && errors.destination && <span className="form-error">{errors.destination}</span>}
                 </div>
                 <div className="form-group">
-                  <input type="text" name="travelDate" className="form-control" placeholder="Travel Date" />
+                  <input
+                    type="date"
+                    name="travelDate"
+                    className={inputClass('travelDate')}
+                    placeholder="Travel Date"
+                    min={today}
+                    value={formData.travelDate}
+                    onChange={e => handleChange('travelDate', e.target.value)}
+                    onBlur={() => handleBlur('travelDate')}
+                  />
+                  {touched.travelDate && errors.travelDate && <span className="form-error">{errors.travelDate}</span>}
                 </div>
               </div>
               <div className="form-group">
-                <input type="number" name="travellers" className="form-control" placeholder="Number of Travellers" min="1" />
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  name="travellers"
+                  className={inputClass('travellers')}
+                  placeholder="Number of Travellers"
+                  value={formData.travellers}
+                  onChange={e => handleChange('travellers', e.target.value.replace(/\D/g, ''))}
+                  onBlur={() => handleBlur('travellers')}
+                />
+                {touched.travellers && errors.travellers && <span className="form-error">{errors.travellers}</span>}
               </div>
               <div className="form-group">
-                <textarea name="message" className="form-control" placeholder="Travel Requirements / Message"></textarea>
+                <textarea
+                  name="message"
+                  className="form-control"
+                  placeholder="Travel Requirements / Message"
+                  value={formData.message}
+                  onChange={e => handleChange('message', e.target.value)}
+                ></textarea>
               </div>
               <motion.button
                 type="submit"

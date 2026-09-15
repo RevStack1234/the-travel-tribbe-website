@@ -1,6 +1,6 @@
-const nodemailer = require('nodemailer');
+import nodemailer from 'nodemailer';
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -18,6 +18,24 @@ module.exports = async function handler(req, res) {
   if (!name || !phone || !destination) {
     return res.status(400).json({ error: 'Name, phone and destination are required' });
   }
+
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return res.status(400).json({ error: 'Invalid email address' });
+  }
+
+  if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
+    console.error('Email send error: GMAIL_USER or GMAIL_APP_PASSWORD is not configured');
+    return res.status(500).json({ error: 'Failed to send enquiry. Please try again.' });
+  }
+
+  const escapeHtml = (value) =>
+    String(value).replace(/[&<>"']/g, (char) => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;',
+    }[char]));
 
   const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -65,36 +83,36 @@ module.exports = async function handler(req, res) {
           <div class="section-title">Contact Details</div>
           <div class="field">
             <div class="field-label">Full Name</div>
-            <div class="field-value">${name}</div>
+            <div class="field-value">${escapeHtml(name)}</div>
           </div>
           <div class="field">
             <div class="field-label">Phone Number</div>
-            <div class="field-value">${phone}</div>
+            <div class="field-value">${escapeHtml(phone)}</div>
           </div>
           ${email ? `
           <div class="field">
             <div class="field-label">Email Address</div>
-            <div class="field-value">${email}</div>
+            <div class="field-value">${escapeHtml(email)}</div>
           </div>` : ''}
 
           <div class="section-title">Travel Details</div>
           <div class="field">
             <div class="field-label">Destination</div>
-            <div class="field-value">${destination}</div>
+            <div class="field-value">${escapeHtml(destination)}</div>
           </div>
           ${travelDate ? `
           <div class="field">
             <div class="field-label">Travel Date</div>
-            <div class="field-value">${travelDate}</div>
+            <div class="field-value">${escapeHtml(travelDate)}</div>
           </div>` : ''}
           ${travellers ? `
           <div class="field">
             <div class="field-label">Number of Travellers</div>
-            <div class="field-value">${travellers}</div>
+            <div class="field-value">${escapeHtml(travellers)}</div>
           </div>` : ''}
           ${message ? `
           <div class="section-title">Message / Requirements</div>
-          <div class="message-box">${message}</div>` : ''}
+          <div class="message-box">${escapeHtml(message)}</div>` : ''}
         </div>
         <div class="footer">
           <img src="${logoUrl}" alt="The Travel Tribbe" class="footer-logo" />
@@ -108,7 +126,7 @@ module.exports = async function handler(req, res) {
 
   try {
     await transporter.sendMail({
-      from: `"The Travel Tribbe Website" <${process.env.GMAIL_USER}>`,
+      from: `"The Travel Tribbe" <${process.env.GMAIL_USER}>`,
       to: process.env.RECEIVER_EMAIL || process.env.GMAIL_USER,
       subject: `New Travel Enquiry - ${destination} | ${name}`,
       html: htmlTemplate,
