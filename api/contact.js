@@ -1,4 +1,6 @@
 import nodemailer from 'nodemailer';
+import fs from 'fs';
+import path from 'path';
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -52,12 +54,16 @@ export default async function handler(req, res) {
     baseUrl = `${protocol}://${host}`;
   }
 
-  // Fallback to a placeholder image if local, to demonstrate external image linking in email clients.
-  // The actual logo will work once deployed to a live domain or by setting SITE_URL in .env to a public URL.
-  const isLocal = baseUrl.includes('localhost');
-  const logoUrl = isLocal 
-    ? 'https://placehold.co/200x200/111827/d4af37.png?text=The+Travel+Tribbe&font=montserrat' 
-    : `${baseUrl}/images/ttt-logo.png`;
+  // Read logo and convert to base64 data URI so email clients can't block it
+  let logoDataUri = 'https://placehold.co/200x200/111827/d4af37.png?text=TTT&font=montserrat';
+  try {
+    const logoPath = path.join(process.cwd(), 'public', 'images', 'ttt-logo.png');
+    const logoBuffer = fs.readFileSync(logoPath);
+    const base64 = logoBuffer.toString('base64');
+    logoDataUri = `data:image/png;base64,${base64}`;
+  } catch (e) {
+    console.warn('Logo file not found, using placeholder');
+  }
 
   const htmlTemplate = `
     <!DOCTYPE html>
@@ -98,7 +104,7 @@ export default async function handler(req, res) {
         <div class="container">
           <!-- Header -->
           <div class="header">
-            <img src="${logoUrl}" alt="The Travel Tribbe Logo" class="logo-img" width="120" />
+            <img src="${logoDataUri}" alt="The Travel Tribbe Logo" class="logo-img" width="120" />
             <h1>The Travel <strong>Tribbe</strong></h1>
             <p>New Enquiry Received</p>
           </div>
@@ -163,7 +169,7 @@ export default async function handler(req, res) {
 
           <!-- Footer -->
           <div class="footer">
-            <img src="${logoUrl}" alt="TTT" class="footer-logo" width="50" />
+            <img src="${logoDataUri}" alt="TTT" class="footer-logo" width="50" />
             <p>&copy; ${new Date().getFullYear()} The Travel Tribbe. All Rights Reserved.</p>
             <p>This enquiry was automatically generated from your website's contact form.</p>
           </div>
